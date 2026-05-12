@@ -5,6 +5,25 @@
 
     const TAMANIO_CELDA=25;
 
+    const SERPIENTE=[
+      {
+        x:14,
+        y:13
+      },
+      {
+        x:14,
+        y:14
+      },
+      {
+        x:14,
+        y:15
+      },
+      {
+        x:14,
+        y:16
+      }
+    ]
+
   dibujarTablero=function(){
     ctx.strokeStyle="white";
     ctx.beginPath();//Empeiza a dibujar en el canva
@@ -46,7 +65,8 @@
       dibujarTablero2();
       dibujarNumerosEnY();
       dibujarNumerosEnX();
-      pintarCoordenada(25,25);
+      //pintarCoordenada(25,25);
+      dibujarSerpiente();
     }
 
 function dibujarNumerosEnY(){
@@ -69,16 +89,129 @@ function dibujarNumerosEnX(){
     }
 }
 
-function pintarCoordenada(lineaX,lineaY){
+function pintarCoordenada(lineaX,lineaY,color){
   let posicionX= lineaX*TAMANIO_CELDA
   let posicionY= lineaY*TAMANIO_CELDA
   if (posicionX<canvas.width && posicionY<canvas.height){
-    ctx.fillStyle="yellow"
+    ctx.fillStyle=color
     ctx.fillRect(posicionX,posicionY,TAMANIO_CELDA,TAMANIO_CELDA)
 
     ctx.strokeStyle="red"
     ctx.strokeRect(posicionX,posicionY,TAMANIO_CELDA,TAMANIO_CELDA)
-
+  
   }
 }
 
+function dibujarSerpiente(){
+  let colorCabeza= "red"
+  for(let i=0; i<SERPIENTE.length;i++){
+    let serp=SERPIENTE[i]
+    if (i==0){
+      pintarCoordenada(serp.x, serp.y, colorCabeza)
+    }else {
+      pintarCoordenada(serp.x, serp.y,"yellow")
+    }
+  }
+
+}
+
+function moverDerecha(){
+  let posicionAnterior={x:0,y:0}
+  if((SERPIENTE[0].x+2)*TAMANIO_CELDA>canvas.width)
+    return
+  for(let i=0; i<SERPIENTE.length;i++){
+    let posicionX=SERPIENTE[i].x
+    let posicionY=SERPIENTE[i].y
+    if(i==0){
+    SERPIENTE[i].x=SERPIENTE[i].x + 1
+  }else{
+    SERPIENTE[i].x=posicionAnterior.x
+    SERPIENTE[i].y=posicionAnterior.y
+
+  }
+  posicionAnterior.x=posicionX
+  posicionAnterior.y=posicionY
+  }
+  dibujarSerpiente()
+}
+
+function moverIzquierda(){
+  let posicionAnterior={x:0,y:0}
+  if((SERPIENTE[0].x-1)*TAMANIO_CELDA<0)
+    return
+  for(let i=0; i<SERPIENTE.length;i++){
+    let posicionX=SERPIENTE[i].x
+    let posicionY=SERPIENTE[i].y
+    if(i==0){
+    SERPIENTE[i].x=SERPIENTE[i].x - 1
+  }else{
+    SERPIENTE[i].x=posicionAnterior.x
+    SERPIENTE[i].y=posicionAnterior.y
+
+  }
+  posicionAnterior.x=posicionX
+  posicionAnterior.y=posicionY
+  }
+  dibujarSerpiente()
+}
+
+function moverAbajo(){
+  let posicionAnterior={x:0,y:0}
+  if((SERPIENTE[0].y+2)*TAMANIO_CELDA>canvas.height)
+    return
+  for(let i=0; i<SERPIENTE.length;i++){
+    let posicionX=SERPIENTE[i].x
+    let posicionY=SERPIENTE[i].y
+    if(i==0){
+    SERPIENTE[i].y=SERPIENTE[i].y + 1
+  }else{
+    SERPIENTE[i].x=posicionAnterior.x
+    SERPIENTE[i].y=posicionAnterior.y
+
+  }
+  posicionAnterior.x=posicionX
+  posicionAnterior.y=posicionY
+  }
+  dibujarSerpiente()
+}
+
+function moverArriba(){
+  let posicionAnterior={x:0,y:0}
+  if((SERPIENTE[0].y-1)*TAMANIO_CELDA<0)
+    return
+  for(let i=0; i<SERPIENTE.length;i++){
+    let posicionX=SERPIENTE[i].x
+    let posicionY=SERPIENTE[i].y
+    if(i==0){
+    SERPIENTE[i].y=SERPIENTE[i].y - 1
+  }else{
+    SERPIENTE[i].x=posicionAnterior.x
+    SERPIENTE[i].y=posicionAnterior.y
+
+  }
+  posicionAnterior.x=posicionX
+  posicionAnterior.y=posicionY
+  }
+  dibujarSerpiente()
+}
+
+function cambiarDireccion(direccion){
+  switch(direccion){
+    case "derecha":
+      moverDerecha();
+        break;
+
+    case "izquierda":
+      moverIzquierda();
+        break;
+
+    case "abajo":
+      moverAbajo();
+        break;
+
+    case "arriba":
+      moverArriba();
+        break;
+  }
+  dibujarTodo()
+}
