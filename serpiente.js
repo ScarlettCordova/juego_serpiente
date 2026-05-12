@@ -44,7 +44,41 @@
     function dibujarTodo() {
       limpiarCanvas();
       dibujarTablero2();
+      dibujarNumerosEnY();
+      dibujarNumerosEnX();
+      pintarCoordenada(25,25);
     }
 
+function dibujarNumerosEnY(){
+  ctx.fillStyle="white"
+  ctx.font= "12px Arial"
+  let contador=0
+  for(let i=0;i<canvas.height;i+=TAMANIO_CELDA){
+    ctx.fillText(contador,5,i+12)
+    contador++
+    }
+}
 
+function dibujarNumerosEnX(){
+  ctx.fillStyle="white"
+  ctx.font= "12px Arial"
+  let contador=0
+  for(let i=0;i<canvas.width;i+=TAMANIO_CELDA){
+    ctx.fillText(contador,i+2,12)
+    contador++
+    }
+}
+
+function pintarCoordenada(lineaX,lineaY){
+  let posicionX= lineaX*TAMANIO_CELDA
+  let posicionY= lineaY*TAMANIO_CELDA
+  if (posicionX<canvas.width && posicionY<canvas.height){
+    ctx.fillStyle="yellow"
+    ctx.fillRect(posicionX,posicionY,TAMANIO_CELDA,TAMANIO_CELDA)
+
+    ctx.strokeStyle="red"
+    ctx.strokeRect(posicionX,posicionY,TAMANIO_CELDA,TAMANIO_CELDA)
+
+  }
+}
 
