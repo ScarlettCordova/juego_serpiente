@@ -5,7 +5,7 @@
 
     const TAMANIO_CELDA=25;
 
-    const SERPIENTE=[
+    let SERPIENTE=[
       {
         x:14,
         y:13
@@ -28,6 +28,9 @@
     let direccionActual="derecha"
     let comida={x:5,y:5}
     let puntaje=0;
+    let juegoTerminado=false;
+    let velocidadSerpiente=300;
+    let velocidad=700
 
   dibujarTablero=function(){
     ctx.strokeStyle="white";
@@ -122,8 +125,9 @@ function dibujarSerpiente(){
 
 function moverDerecha(){
   let nuevoElemento={x:0,y:0}
-  if((SERPIENTE[0].x+2)*TAMANIO_CELDA>canvas.width)
-    return
+  if((SERPIENTE[0].x+2)*TAMANIO_CELDA>canvas.width){
+    gameOver()
+    return}
   nuevoElemento.x=SERPIENTE[0].x+1
   nuevoElemento.y=SERPIENTE[0].y
 
@@ -134,8 +138,9 @@ function moverDerecha(){
 
 function moverIzquierda(){
   let nuevoElemento={x:0,y:0}
-  if((SERPIENTE[0].x-1)*TAMANIO_CELDA<0)
-    return
+  if((SERPIENTE[0].x-1)*TAMANIO_CELDA<0){
+    gameOver()
+    return}
   nuevoElemento.x=SERPIENTE[0].x-1
   nuevoElemento.y=SERPIENTE[0].y
 
@@ -146,8 +151,9 @@ function moverIzquierda(){
 
 function moverAbajo(){
   let nuevoElemento={x:0,y:0}
-  if((SERPIENTE[0].y+2)*TAMANIO_CELDA>canvas.height)
-    return
+  if((SERPIENTE[0].y+2)*TAMANIO_CELDA>canvas.height){
+    gameOver()
+    return}
   nuevoElemento.x=SERPIENTE[0].x
   nuevoElemento.y=SERPIENTE[0].y+1
 
@@ -158,8 +164,10 @@ function moverAbajo(){
 
 function moverArriba(){
   let nuevoElemento={x:0,y:0}
-  if((SERPIENTE[0].y-1)*TAMANIO_CELDA<0)
+  if((SERPIENTE[0].y-1)*TAMANIO_CELDA<0){
+    gameOver()
     return
+  }    
   nuevoElemento.x=SERPIENTE[0].x
   nuevoElemento.y=SERPIENTE[0].y-1
 
@@ -169,41 +177,44 @@ function moverArriba(){
 }
 
 function iniciarJuego(){
-  intervaloSerpiente=setInterval(moverSerpiente,500)
-  
+  intervaloSerpiente=setInterval(moverSerpiente,velocidad-velocidadSerpiente)
+  cambiarEstado("Jugando")
 }
 
 function pausarJuego(){
   clearInterval(intervaloSerpiente)
+  cambiarEstado("Descanzando")
 }
 
 function moverSerpiente(){
   let atrapado=comidaAtrapada()
-  let nuevoElemento={x:SERPIENTE[0].x, y:SERPIENTE[0].y}
-  console.log("moviendo")
+  if (juegoTerminado){
+    return
+  }
+
   switch(direccionActual){
     case "derecha":
       moverDerecha();
-      nuevoElemento.x++
+
         break;
 
     case "izquierda":
       moverIzquierda();
-      nuevoElemento.x--
+
         break;
 
     case "abajo":
       moverAbajo();
-      nuevoElemento.y++
+
         break;
 
     case "arriba":
       moverArriba();
-      nuevoElemento.y--
+
         break;
   }
   if(atrapado){
-    SERPIENTE.unshift(nuevoElemento)
+    SERPIENTE.push(comida)
     aumentarPuntaje()
     generarNuevaPosicionComida()
   }
@@ -239,5 +250,43 @@ function comidaAtrapada(){
 
 function aumentarPuntaje(){
   puntaje++
+  if(puntaje%2==0 && velocidadSerpiente<=600){
+    velocidadSerpiente+=50;
+    clearInterval(intervaloSerpiente)
+    intervaloSerpiente=setInterval(moverSerpiente,velocidad-velocidadSerpiente)
+  }
   document.getElementById("puntaje").innerText=puntaje
+}
+
+function cambiarEstado(estado){
+document.getElementById("estado").innerText=estado
+}
+
+function gameOver(){
+  juegoTerminado=true
+  cambiarEstado("Game Over")
+}
+
+function reiniciarJuego(){
+  limpiarCanvas()
+  dibujarTablero2()
+  SERPIENTE=[
+      {x:14, y:13},
+      {x:14, y:14},
+      {x:14, y:15},
+      {x:14, y:16}
+    ]
+  dibujarSerpiente()
+  puntaje=0
+  direccionActual="derecha"
+  cambiarEstado("Listo")
+  juegoTerminado=false
+  dibujarNumerosEnX()
+  dibujarNumerosEnY()
+  comida={x:5,y:5}
+  dibujarComida()
+  clearInterval(intervaloSerpiente)
+  velocidadSerpiente=300;
+  document.getElementById("puntaje").innerText=0
+  puntaje=0
 }
