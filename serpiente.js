@@ -223,6 +223,23 @@ function moverSerpiente(){
 }
 
 function cambiarDireccion(direccion){
+
+    if(direccionActual=="derecha" && direccion=="izquierda"){
+    return;
+  }
+
+  if(direccionActual=="izquierda" && direccion=="derecha"){
+    return;
+  }
+
+  if(direccionActual=="arriba" && direccion=="abajo"){
+    return;
+  }
+
+  if(direccionActual=="abajo" && direccion=="arriba"){
+    return;
+  }
+
   direccionActual=direccion;
 }
 
